@@ -7,7 +7,7 @@ import { BsFillBookmarkStarFill } from 'react-icons/bs';
 export default function Navbar() {
     return (
         <div>
-            <nav className="navbar is-fixed-top" role="navigation" aria-label="main navigation">
+            <nav className="navbar" role="navigation" aria-label="main navigation">
                 <div className="navbar-brand">
                     <a className="navbar-item" href="https://bulma.io">
                         <img src={logo} width="100" height="50"/>

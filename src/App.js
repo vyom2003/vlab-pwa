@@ -2,6 +2,7 @@ import 'bulma/css/bulma.min.css';
 import logo from './vlab-logo.png';
 import { FcSearch } from 'react-icons/fc';
 import './sass/mystyles.css'
+import {AiOutlineArrowLeft,AiOutlineArrowRight} from 'react-icons/ai'
 import Filter from './Filter';
 import React, { useState } from 'react';
 import { HiFilter } from 'react-icons/hi'
@@ -11,12 +12,18 @@ function App() {
   const [word, setWord] = useState("")
   const [page, setPage] = useState(1)
   const [totalPage, setTotal] = useState(1)
+  const PrevPage = ()=>{
+    setPage(page-1)
+  }
+  const NextPage = ()=>{
+    setPage(page+1)
+  }
   React.useEffect(() => {
     fetch("https://8kne7udek3.execute-api.ap-southeast-2.amazonaws.com/items")
       .then((resp) => resp.json())
       .then((data) => {
         setExperiments(data);
-        setTotal(Math.ceil(data.length / 5))
+        setTotal(Math.ceil(data.length / 8))
       });
   }, []);
   const SearchExp = (e) => {
@@ -35,26 +42,41 @@ function App() {
   return (
     <>
       <Navbar />
-      <div className='columns is-vcentered is-mobile mt-6 '>
+      <div className='columns is-vcentered is-mobile mt-4 '>
         <div className='column is-half-desktop is-offset-one-quarter-desktop'>
           <div className="field has-addons m-4">
             <div className='control'>
               <p className="control has-icons-left">
-                <input className="input" size="200" placeholder="Search For Experiments..." style={{ borderRadius: "290000px"}} onChange={SearchExp} />
+                <input className="input" size="200" placeholder="Search For Experiments..." style={{ borderRadius: "290000px" }} onChange={SearchExp} />
                 <span className="icon is-small is-left">
                   <FcSearch />
                 </span>
               </p>
             </div>
             <div className="control">
-              <button className="button is-info ml-4 has-text-black" style={{ borderRadius: "290000px",backgroundColor:"yellowgreen"}} onClick={ToggleFilter}>
-                <HiFilter/> Filter
+              <button className="button is-info ml-4 has-text-black" style={{ borderRadius: "290000px", backgroundColor: "yellowgreen" }} onClick={ToggleFilter}>
+                <HiFilter /> Filter
               </button>
             </div>
           </div>
         </div>
       </div>
-      <Filter experiments={experiments} word={word} />
+      <Filter experiments={experiments} word={word} pagenum={page} setp={setPage} settp={setTotal}/>
+      <footer className="footer" style={{padding:"2%",backgroundColor:"#575266"}}>
+        <div className="content has-text-centered">
+          <button className=' button is-dark has-text-white is-pulled-left ml-1' style={{fontSize:'20px'}} 
+          disabled={page===1} onClick={PrevPage}>
+            <AiOutlineArrowLeft/>&nbsp;Previous
+          </button>
+          <button className='button is-dark has-text-white is-pulled-right mr-1' style={{fontSize:'20px'}} 
+          disabled={page===totalPage} onClick={NextPage}>
+            Next&nbsp;<AiOutlineArrowRight/>
+          </button>
+          <p className='has-text-white is-size-4'>
+            Page {page} of {totalPage}
+          </p>
+        </div>
+      </footer>
     </>
   );
 }

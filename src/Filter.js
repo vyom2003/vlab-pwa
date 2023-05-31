@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { HiFilter } from 'react-icons/hi'
 import 'bulma/css/bulma.min.css';
 import './sass/mystyles.css'
 import 'bulma-divider'
@@ -77,8 +76,10 @@ export default function Filter(props) {
                 }
             }
         }
-        if (SelectDisciplines.length == 0 && SelectInstis.length == 0) {
+        if (SelectDisciplines.length === 0 && SelectInstis.length === 0) {
             setDisplay(arr_after_search)
+            props.setp(1);
+            props.settp(Math.ceil(arr_after_search.length/8))
             return;
         }
         for (let i of arr_after_search) {
@@ -87,6 +88,8 @@ export default function Filter(props) {
             }
         }
         setDisplay(arr)
+        props.setp(1);
+        props.settp(Math.ceil(arr.length/8))
     }, [SelectDisciplines, SelectInstis,props.word]);
     return (
         <div>            
@@ -176,7 +179,7 @@ export default function Filter(props) {
                 <div className='column'>
                     <div className='columns is-multiline is-mobile'>
                         {
-                            Display.map((exp) => {
+                            Display.slice((props.pagenum-1)*8,(props.pagenum)*8).map((exp) => {
                                 return (
                                     <div className='column is-one-quarter-desktop'  key={Math.random()}>
                                         <Bulma_component UserData={{
