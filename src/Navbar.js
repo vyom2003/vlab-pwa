@@ -7,13 +7,21 @@ import { BsFillBookmarkStarFill } from 'react-icons/bs';
 export default function Navbar() {
     return (
         <div>
-            <nav className="navbar" role="navigation" aria-label="main navigation">
+            <nav className="navbar is-hidden-desktop" role="navigation" aria-label="main navigation">
                 <div className="navbar-brand">
                     <a className="navbar-item" href="https://bulma.io">
                         <img src={logo} width="100" height="50"/>
                     </a>
 
-                    <a role="button" className="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+                    <a role="button" className="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample" onClick={()=>{
+                        if(document.getElementById("navbarBasicExample").className.includes("is-active"))
+                        {
+                            document.getElementById("navbarBasicExample").className="navbar-menu"
+                        }
+                        else{
+                            document.getElementById("navbarBasicExample").className="navbar-menu is-active"
+                        }
+                    }}>
                         <span aria-hidden="true"></span>
                         <span aria-hidden="true"></span>
                         <span aria-hidden="true"></span>

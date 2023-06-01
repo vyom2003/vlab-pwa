@@ -22,6 +22,7 @@ function App() {
     fetch("https://8kne7udek3.execute-api.ap-southeast-2.amazonaws.com/items")
       .then((resp) => resp.json())
       .then((data) => {
+        console.log(data)
         setExperiments(data);
         setTotal(Math.ceil(data.length / 8))
       });
@@ -47,14 +48,14 @@ function App() {
           <div className="field has-addons m-4">
             <div className='control'>
               <p className="control has-icons-left">
-                <input className="input" size="200" placeholder="Search For Experiments..." style={{ borderRadius: "290000px" }} onChange={SearchExp} />
+                <input className="input is-large" size="200" placeholder="Search For Experiments..." style={{ borderRadius: "290000px" }} onChange={SearchExp} />
                 <span className="icon is-small is-left">
                   <FcSearch />
                 </span>
               </p>
             </div>
             <div className="control">
-              <button className="button is-info ml-4 has-text-black" style={{ borderRadius: "290000px", backgroundColor: "yellowgreen" }} onClick={ToggleFilter}>
+              <button className="button is-info ml-4 has-text-black is-large" style={{ borderRadius: "290000px", backgroundColor: "yellowgreen" }} onClick={ToggleFilter}>
                 <HiFilter /> Filter
               </button>
             </div>
