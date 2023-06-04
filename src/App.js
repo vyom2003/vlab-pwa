@@ -31,14 +31,16 @@ function App() {
     setWord(e.target.value)
   }
   const ToggleFilter = () => {
+    console.log(document.getElementById("filter-set").className)
     if (!document.getElementById("filter-set").className.includes("is-hidden-desktop is-hidden-tablet")) {
-      document.getElementById("filter-set").className = document.getElementById("filter-set").className + "is-hidden-desktop is-hidden-tablet";
-      document.getElementById("divider").className = document.getElementById("divider").className + "is-hidden-desktop is-hidden-tablet";
+      document.getElementById("filter-set").className = document.getElementById("filter-set").className + " is-hidden-desktop is-hidden-tablet";
+      document.getElementById("divider").className = document.getElementById("divider").className + " is-hidden-desktop is-hidden-tablet";
     }
     else {
       document.getElementById("filter-set").className = 'column is-one-fifth is-hidden-mobile';
       document.getElementById("divider").className = "is-divider-vertical is-hidden-mobile";
     }
+    document.getElementById("filter-model").className=document.getElementById("filter-model").className+" is-active"
   }
   return (
     <>
