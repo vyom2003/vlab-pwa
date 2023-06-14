@@ -15,6 +15,16 @@ export default function Navbar(props) {
         props.setNav(0);
         document.getElementById("navbarBasicExample").className="navbar-menu"
     }
+    const LoadSaved = () => {
+        props.setp(1)
+        props.setNav(2);
+        document.getElementById("navbarBasicExample").className="navbar-menu"
+    }
+    const LoadPop = () => {
+        props.setp(1)
+        props.setNav(3);
+        document.getElementById("navbarBasicExample").className="navbar-menu"
+    }
     return (
         <div>
             <nav className="navbar is-hidden-desktop is-light" role="navigation" aria-label="main navigation">
@@ -40,7 +50,7 @@ export default function Navbar(props) {
 
                 <div id="navbarBasicExample" className="navbar-menu">
                     <div className="navbar-start">
-                        <a className="navbar-item">
+                        <a className="navbar-item" onClick={LoadPop}>
                         <AiFillStar />Popular
                         </a>
 
@@ -50,7 +60,7 @@ export default function Navbar(props) {
                         <a className="navbar-item" onClick={LoadAll}>
                         <AiFillExperiment />All Experiments
                         </a>
-                        <a className="navbar-item">
+                        <a className="navbar-item" onClick={LoadSaved}>
                         <BsFillBookmarkStarFill />Starred
                         </a>
                     </div>

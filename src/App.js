@@ -13,6 +13,7 @@ function App() {
   const [word, setWord] = useState("")
   const [page, setPage] = useState(1)
   const [totalPage, setTotal] = useState(1)
+  const [Pop,setPop] = useState([])
   const PrevPage = () => {
     setPage(page - 1)
   }
@@ -23,8 +24,14 @@ function App() {
     fetch("https://8kne7udek3.execute-api.ap-southeast-2.amazonaws.com/items")
       .then((resp) => resp.json())
       .then((data) => {
+        for(let i of data)
+        {
+          console.log(i["Pageviews"]+" "+i["Experiment Name"])
+        }
         setExperiments(data);
         setTotal(Math.ceil(data.length / 8))
+        let copy= [...data]
+        setPop(copy.sort((a, b) => b["Pageviews"] - a["Pageviews"]).slice(0,10))
       });
   }, []);
   const SearchExp = (e) => {
@@ -59,7 +66,7 @@ function App() {
                 </span>
               </p>
             </div>
-            {nav != 1 ?
+            {nav != 1 && nav!=3 ?
               <div className="control mt-5">
                 <button className="button is-info ml-4 has-text-black is-large" style={{ borderRadius: "290000px", backgroundColor: "yellowgreen" }} onClick={ToggleFilter}>
                   <HiFilter /> Filter
@@ -68,7 +75,7 @@ function App() {
           </div>
         </div>
       </div>
-      <Filter experiments={experiments} word={word} pagenum={page} setp={setPage} settp={setTotal} nav={nav} setNav={setNav} />
+      <Filter experiments={experiments} word={word} pagenum={page} setp={setPage} settp={setTotal} nav={nav} setNav={setNav} pop={Pop}/>
       {
         totalPage != 0 ?
           <footer className="footer" style={{ padding: "2%", backgroundColor: "#575266" }}>
