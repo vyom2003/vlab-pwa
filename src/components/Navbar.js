@@ -27,7 +27,7 @@ export default function Navbar(props) {
     }
     return (
         <div>
-            <nav className="navbar is-hidden-desktop is-light" role="navigation" aria-label="main navigation">
+            <nav className="navbar is-hidden-desktop is-light" role="navigation" aria-label="main navigation" style={{backgroundColor:"#EDF5E1"}}>
                 <div className="navbar-brand">
                     <a className="navbar-item" href="https://bulma.io">
                         <img src={logo} width="70" height="90"/>
