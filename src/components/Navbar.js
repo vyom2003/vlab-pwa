@@ -27,12 +27,12 @@ export default function Navbar(props) {
     }
     return (
         <div>
-            <nav className="navbar is-hidden-desktop is-light" role="navigation" aria-label="main navigation" style={{backgroundColor:"#EDF5E1"}}>
+            <nav className="navbar is-hidden-desktop is-light" role="navigation" aria-label="main navigation">
                 <div className="navbar-brand">
                     <a className="navbar-item" href="https://bulma.io">
                         <img src={logo} width="70" height="90"/>
                     </a>
-
+                    <b style={{marginTop:"auto",marginBottom:"auto",fontSize:"x-large"}}>Virtual Labs</b>
                     <a role="button" className="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample" onClick={()=>{
                         if(document.getElementById("navbarBasicExample").className.includes("is-active"))
                         {

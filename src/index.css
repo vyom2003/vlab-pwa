@@ -6,16 +6,27 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-html,body{
-  background-color: #DCC7AA!important;
+
+html,
+body {
+  background-image: linear-gradient(#F5F5DC, lightcyan) !important;
 }
+
+#filter-set {
+  background-image: linear-gradient(brown, white) !important;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
-html, body {
+
+html,
+body {
   overflow-x: hidden;
 }
+
 body {
-  position: relative
+  position: relative;
+  overflow: hidden;
 }

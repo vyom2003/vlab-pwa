@@ -2,15 +2,14 @@ import React, { useState } from 'react'
 import 'bulma/css/bulma.min.css';
 import '../sass/mystyles.css'
 import 'bulma-divider'
-import {TiTick} from 'react-icons/ti'
-import {BiRename} from 'react-icons/bi'
+import { TiTick } from 'react-icons/ti'
+import { BiRename } from 'react-icons/bi'
 import '@fortawesome/fontawesome-free/css/all.min.css'
 import 'bulma-switch'
 import { RxCounterClockwiseClock } from 'react-icons/rx'
-import { AiFillExperiment, AiFillStar, AiFillDelete } from 'react-icons/ai'
+import { AiFillExperiment, AiFillStar, AiFillStepBackward, AiFillDelete, AiFillSave } from 'react-icons/ai'
 import { BsFillBookmarkStarFill, BsFillBookmarkPlusFill } from 'react-icons/bs';
 import { Bulma_component } from 'yatharth-super-lemon'
-import { save } from 'fontawesome';
 export default function ExperimentLoader(props) {
     const [Instis, setInstis] = useState(["option1-Insti", "option2-Insti"])
     const [Discipline, setDiscipline] = useState(["option1-discipline", "option2-dis"])
@@ -20,7 +19,7 @@ export default function ExperimentLoader(props) {
     const [History, setHistory] = useState([])
     const [saved, setSaved] = useState([])
     const [saved_filters, setSavedFilters] = useState(JSON.parse(localStorage.getItem("Saved_Filters")))
-    const [apply, setApply] = useState(0);
+    const [apply, setApply] = useState(1);
     const disc = {
         "Civil Engineering": "CIVIL",
         "Computer Science and Engineering": "CSE",
@@ -180,6 +179,29 @@ export default function ExperimentLoader(props) {
         setSelectDiscipline([])
         setSelectInstis([])
     }
+    const ApplyFilter = (name) => {
+        setSelectDiscipline(saved_filters[name]["Discipline"]);
+        setSelectInstis(saved_filters[name]["Instis"])
+        window.alert(saved_filters[name]["AltName"] + " Applied")
+        setApply(1);
+    }
+    const RenameFilter = (name) => {
+        let val = window.prompt("Give new name")
+        if (val) {
+            let a = JSON.parse(JSON.stringify(saved_filters))
+            a[name]["AltName"] = val;
+            setSavedFilters(a)
+            localStorage.setItem("Saved_Filters", JSON.stringify(a));
+            window.alert("Filter renamed")
+        }
+    }
+    const DeleteFilter = (name) => {
+        let a = JSON.parse(JSON.stringify(saved_filters))
+        a[name] = null;
+        setSavedFilters(a)
+        localStorage.setItem("Saved_Filters", JSON.stringify(a));
+        window.alert("Filter deleted")
+    }
     React.useEffect(() => {
         let arr = []
         let arr_dis = []
@@ -209,7 +231,7 @@ export default function ExperimentLoader(props) {
         setInstis(arr)
         setDiscipline(arr_dis)
         setDisplay(props.experiments)
-        setHistory(links.slice(0, 10))
+        setHistory(links)
     }, [props.experiments]);
 
     React.useEffect(() => {
@@ -244,20 +266,37 @@ export default function ExperimentLoader(props) {
         <div>
             <div className="columns m-0 is-mobile">
 
-                <div id="filter-set" className='column is-2 is-hidden-mobile is-hidden-desktop is-hidden-tablet' style={{ backgroundColor: "#AB987A" }}>
+                <div id="filter-set" className='column is-2 is-hidden-mobile is-hidden-desktop is-hidden-tablet'>
                     <div className="tabs is-centered is-boxed is-small">
                         <ul>
-                            <li className="is-active">
-                                <a>
-                                    <span>Apply Filters</span>
-                                </a>
-                            </li>
-                            <li className="is-acti">
-                                <a>
-                                    <span>Saved </span>
-                                </a>
+                            {apply ? <>
+                                <li className="is-active">
+                                    <a>
+                                        <b>Apply Filters</b>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a onClick={() => {
+                                        setApply(0);
+                                    }}>
+                                        <b style={{ color: "yellow" }}>Saved </b>
+                                    </a>
 
-                            </li>
+                                </li></> : null}
+                            {!apply ? <>
+                                <li>
+                                    <a onClick={() => {
+                                        setApply(1);
+                                    }}>
+                                        <b style={{ color: "yellow" }}>Apply Filters</b>
+                                    </a>
+                                </li >
+                                <li className="is-active">
+                                    <a>
+                                        <b>Saved </b>
+                                    </a>
+
+                                </li></> : null}
                         </ul>
                     </div>
                     {apply ? <>
@@ -318,37 +357,46 @@ export default function ExperimentLoader(props) {
                         </div>
                         <div className="is-divider"></div>
                         <div className='has-text-centered'>
-                            <button className='button is-danger is-light is-rounded mr-4' style={{ padding: "10px" }} onClick={ClearFilter}><AiFillDelete /></button>
-                            <button className='button is-info is-light is-rounded' style={{ padding: "10px" }} onClick={SaveFilter}><BsFillBookmarkPlusFill /></button>
+                            <button className='button is-danger is-light is-rounded mr-4' style={{ padding: "10px" }} onClick={ClearFilter}><AiFillDelete />Clear</button>
+                            <button className='button is-info is-light is-rounded' style={{ padding: "10px" }} onClick={SaveFilter}><BsFillBookmarkPlusFill />Save</button>
                         </div>
                     </> : null}
                     {
                         apply == 0 ? <>
-                            <ul className='m-4' style={{color:"black"}}>
+                            <ul className='m-4' style={{ color: "black" }}>
                                 {saved_filters && saved_filters["Filter1"] ?
-                                <li className='mt-3'>
-                                    <span style={{backgroundColor:"lightgreen",padding:"3px"}}>{saved_filters["Filter1"]["AltName"]}{" "}:</span>
-                                    <br/>
-                                    <button className='mt-2 ml-1 button is-small is-primary has-text-black is-light'><TiTick/>Apply</button>
-                                    <button className='mt-2 ml-1 button is-small is-primary has-text-black is-light'><BiRename/>Rename</button>
-                                    <button className='mt-2 ml-1 button is-small is-primary has-text-black is-light'><AiFillDelete/>Delete</button>
-                                </li>:null}
+                                    <li className='mt-3'>
+                                        <span style={{ backgroundColor: "lightgreen", padding: "3px" }}>{saved_filters["Filter1"]["AltName"]}{" "}:</span>
+                                        <br />
+                                        <button className='mt-2 ml-1 button is-small is-primary has-text-black is-light'
+                                            onClick={() => { ApplyFilter("Filter1") }}><TiTick />Apply</button>
+                                        <button className='mt-2 ml-1 button is-small is-primary has-text-black is-light'
+                                            onClick={() => { RenameFilter("Filter1") }}><BiRename />Rename</button>
+                                        <button className='mt-2 ml-1 button is-small is-primary has-text-black is-light'
+                                            onClick={() => { DeleteFilter("Filter1") }}><AiFillDelete />Delete</button>
+                                    </li> : null}
                                 {saved_filters && saved_filters["Filter2"] ?
                                     <li className='mt-5'>
-                                    <span style={{backgroundColor:"lightgreen",padding:"3px"}}>{saved_filters["Filter2"]["AltName"]}{" "}:</span>
-                                    <br/>
-                                    <button className='mt-2 ml-1 button is-small is-primary has-text-black is-light'><TiTick/>Apply</button>
-                                    <button className='mt-2 ml-1 button is-small is-primary has-text-black is-light'><BiRename/>Rename</button>
-                                    <button className='mt-2 ml-1 button is-small is-primary has-text-black is-light'><AiFillDelete/>Delete</button>
-                                </li>:null}
+                                        <span style={{ backgroundColor: "lightgreen", padding: "3px" }}>{saved_filters["Filter2"]["AltName"]}{" "}:</span>
+                                        <br />
+                                        <button className='mt-2 ml-1 button is-small is-primary has-text-black is-light'
+                                            onClick={() => { ApplyFilter("Filter2") }}><TiTick />Apply</button>
+                                        <button className='mt-2 ml-1 button is-small is-primary has-text-black is-light'
+                                            onClick={() => { RenameFilter("Filter2") }}><BiRename />Rename</button>
+                                        <button className='mt-2 ml-1 button is-small is-primary has-text-black is-light'
+                                            onClick={() => { DeleteFilter("Filter2") }}><AiFillDelete />Delete</button>
+                                    </li> : null}
                                 {saved_filters && saved_filters["Filter3"] ?
                                     <li className='mt-5'>
-                                    <span style={{backgroundColor:"lightgreen",padding:"3px"}}>{saved_filters["Filter3"]["AltName"]}{" "}:</span>
-                                    <br/>
-                                    <button className='mt-2 ml-1 button is-small is-primary has-text-black is-light'><TiTick/>Apply</button>
-                                    <button className='mt-2 ml-1 button is-small is-primary has-text-black is-light'><BiRename/>Rename</button>
-                                    <button className='mt-2 ml-1 button is-small is-primary has-text-black is-light'><AiFillDelete/>Delete</button>
-                                </li>:null}
+                                        <span style={{ backgroundColor: "lightgreen", padding: "3px" }}>{saved_filters["Filter3"]["AltName"]}{" "}:</span>
+                                        <br />
+                                        <button className='mt-2 ml-1 button is-small is-primary has-text-black is-light'
+                                            onClick={() => { ApplyFilter("Filter3") }}><TiTick />Apply</button>
+                                        <button className='mt-2 ml-1 button is-small is-primary has-text-black is-light'
+                                            onClick={() => { RenameFilter("Filter3") }}><BiRename />Rename</button>
+                                        <button className='mt-2 ml-1 button is-small is-primary has-text-black is-light'
+                                            onClick={() => { DeleteFilter("Filter3") }}><AiFillDelete />Delete</button>
+                                    </li> : null}
                             </ul>
                         </> : null
                     }
@@ -361,7 +409,7 @@ export default function ExperimentLoader(props) {
                             <button className="delete" aria-label="close" onClick={CloseModal}></button>
                         </header>
                         <section className="modal-card-body">
-                            <div className="field mb-4 ml-4">
+                            {apply ? <><div className="field mb-4 ml-4">
                                 <label className="label m-2 is-size-4 has-text-primary" style={{ textShadow: "0.15rem 0.15rem #D5F2D8" }}>Institutes</label>
                                 {
                                     Instis.map((element) => {
@@ -388,37 +436,87 @@ export default function ExperimentLoader(props) {
                                     })
                                 }
                             </div>
-                            <div className="is-divider"></div>
-                            <div className="field mb-4 ml-4">
-                                <label className="label m-2 is-size-4 has-text-primary" style={{ textShadow: "0.15rem 0.15rem #D5F2D8" }}>Discipline</label>
-                                {
-                                    Discipline.map((element) => {
-                                        if (SelectDisciplines.includes(element))
-                                            return (
-                                                <>
-                                                    <button className="button is-rounded is-success has-text-light is-small is-focused m-2"
-                                                        onClick={() => { ExcludeDis(element) }} style={{ height: "max-content", whiteSpace: "inherit" }}>{disc[element]}</button>
-                                                    <br />
-                                                </>
-                                            )
-                                        else
-                                            return (
-                                                <>
-                                                    <button className="button is-rounded is-danger is-light is-focused is-small m-2 has-text-black"
-                                                        onClick={() => { IncludeDis(element) }}
-                                                        style={{
-                                                            boxShadow: "0 8px 8px 8px rgba(0,0,0,0.4)",
-                                                            height: "max-content", whiteSpace: "inherit"
-                                                        }}>{disc[element]}</button>
-                                                    <br />
-                                                </>
-                                            )
-                                    })
-                                }
-                            </div>
+                                <div className="is-divider"></div>
+                                <div className="field mb-4 ml-4">
+                                    <label className="label m-2 is-size-4 has-text-primary" style={{ textShadow: "0.15rem 0.15rem #D5F2D8" }}>Discipline</label>
+                                    {
+                                        Discipline.map((element) => {
+                                            if (SelectDisciplines.includes(element))
+                                                return (
+                                                    <>
+                                                        <button className="button is-rounded is-success has-text-light is-small is-focused m-2"
+                                                            onClick={() => { ExcludeDis(element) }} style={{ height: "max-content", whiteSpace: "inherit" }}>{disc[element]}</button>
+                                                        <br />
+                                                    </>
+                                                )
+                                            else
+                                                return (
+                                                    <>
+                                                        <button className="button is-rounded is-danger is-light is-focused is-small m-2 has-text-black"
+                                                            onClick={() => { IncludeDis(element) }}
+                                                            style={{
+                                                                boxShadow: "0 8px 8px 8px rgba(0,0,0,0.4)",
+                                                                height: "max-content", whiteSpace: "inherit"
+                                                            }}>{disc[element]}</button>
+                                                        <br />
+                                                    </>
+                                                )
+                                        })
+                                    }
+                                </div></> : null}
+                            {
+                                apply == 0 ? <>
+                                    <ul className='m-4' style={{ color: "black" }}>
+                                        {saved_filters && saved_filters["Filter1"] ?
+                                            <li className='mt-3'>
+                                                <span style={{ backgroundColor: "lightgreen", padding: "3px" }}>{saved_filters["Filter1"]["AltName"]}{" "}:</span>
+                                                <br />
+                                                <button className='mt-2 ml-1 button is-small is-primary has-text-black is-light'
+                                                    onClick={() => { ApplyFilter("Filter1") }}><TiTick />Apply</button>
+                                                <button className='mt-2 ml-1 button is-small is-primary has-text-black is-light'
+                                                    onClick={() => { RenameFilter("Filter1") }}><BiRename />Rename</button>
+                                                <button className='mt-2 ml-1 button is-small is-primary has-text-black is-light'
+                                                    onClick={() => { DeleteFilter("Filter1") }}><AiFillDelete />Delete</button>
+                                            </li> : null}
+                                        {saved_filters && saved_filters["Filter2"] ?
+                                            <li className='mt-5'>
+                                                <span style={{ backgroundColor: "lightgreen", padding: "3px" }}>{saved_filters["Filter2"]["AltName"]}{" "}:</span>
+                                                <br />
+                                                <button className='mt-2 ml-1 button is-small is-primary has-text-black is-light'
+                                                    onClick={() => { ApplyFilter("Filter2") }}><TiTick />Apply</button>
+                                                <button className='mt-2 ml-1 button is-small is-primary has-text-black is-light'
+                                                    onClick={() => { RenameFilter("FIlter2") }}><BiRename />Rename</button>
+                                                <button className='mt-2 ml-1 button is-small is-primary has-text-black is-light'
+                                                    onClick={() => { DeleteFilter("Filter2") }}><AiFillDelete />Delete</button>
+                                            </li> : null}
+                                        {saved_filters && saved_filters["Filter3"] ?
+                                            <li className='mt-5'>
+                                                <span style={{ backgroundColor: "lightgreen", padding: "3px" }}>{saved_filters["Filter3"]["AltName"]}{" "}:</span>
+                                                <br />
+                                                <button className='mt-2 ml-1 button is-small is-primary has-text-black is-light'
+                                                    onClick={() => { ApplyFilter("Filter3") }}><TiTick />Apply</button>
+                                                <button className='mt-2 ml-1 button is-small is-primary has-text-black is-light'
+                                                    onClick={() => { RenameFilter("Filter3") }}><BiRename />Rename</button>
+                                                <button className='mt-2 ml-1 button is-small is-primary has-text-black is-light'
+                                                    onClick={() => { DeleteFilter("Filter3") }}><AiFillDelete />Delete</button>
+                                            </li> : null}
+                                    </ul>
+                                </> : null
+                            }
                         </section>
                         <footer className="modal-card-foot">
-                            <button className="button is-success" onClick={CloseModal}>Done</button>
+                            {apply ?
+                                <><button className='button is-success is-light is-rounded' style={{ padding: "10px" }} onClick={() => {
+                                    setApply(0);
+                                }}><AiFillSave />View Saved</button>
+                                    <button className='button is-danger is-light is-rounded' style={{ padding: "10px" }} onClick={ClearFilter}><AiFillDelete />Clear</button>
+                                    <button className='button is-info is-light is-rounded' style={{ padding: "10px" }} onClick={SaveFilter}><BsFillBookmarkPlusFill />Save</button></> : null}
+                            {
+                                !apply ? <><button className='button is-success is-light is-rounded' style={{ padding: "10px" }} onClick={() => {
+                                    setApply(1);
+                                }}><AiFillStepBackward />Back</button>
+                                </> : null
+                            }
                         </footer>
                     </div>
                 </div>
@@ -465,49 +563,78 @@ export default function ExperimentLoader(props) {
                             }
                         </div>) : null}
                     {
-                        props.nav == 1 ? (<div className='columns is-multiline is-mobile'>
-                            {
-                                props.settp(Math.ceil(History.length / 8))
-                            }
-                            {
-                                History.slice((props.pagenum - 1) * 8, (props.pagenum) * 8).map((exp) => {
-                                    let a = {}
-                                    for (let i of props.experiments) {
-                                        if (i["Experiment Name"] === exp) {
-                                            a = i;
-                                            break;
+                        props.nav == 1 ? (
+                            <div className='columns is-multiline is-mobile'>
+                                {
+                                    props.settp(Math.ceil(History.filter((ele) => {
+                                        for (let i of Display) {
+                                            if (i["Experiment Name"] === ele) {
+                                                return true;
+                                            }
                                         }
-                                    }
-                                    return (
-                                        <div className='column is-one-quarter-desktop' key={Math.random()}>
-                                            <Bulma_component onclickinglink={() => { OpenLink(a["Experiment URL"]) }} onValueChange={() => { ToggleSave(a["Experiment Name"]) }} UserData={{
-                                                exp_name: a["Experiment Name"],
-                                                institute: a["Insitute Name"],
-                                                exp_link: a["Experiment URL"],
-                                                exp_img: a["Image"],
-                                                institute_img: "https://cdn.vlabs.ac.in/logo/" + a["Insitute Name"].toLowerCase() + ".png",
-                                                card_content: a["Description"],
-                                                rating: '4.5',
-                                                domain: a["Discipline Name"],
-                                                lab: a["Lab Name"],
-                                                saved: saved.includes(exp["Experiment Name"])
-                                            }} />
-                                        </div>
-                                    )
-                                })
-                            }
-                        </div>) : null}
+                                        return false;
+                                    }).length / 8))
+                                }
+                                {
+                                    History.filter((ele) => {
+                                        for (let i of Display) {
+                                            if (i["Experiment Name"] === ele) {
+                                                return true;
+                                            }
+                                        }
+                                        return false;
+                                    }).slice((props.pagenum - 1) * 8, (props.pagenum) * 8).map((exp) => {
+                                        let a = {}
+                                        for (let i of props.experiments) {
+                                            if (i["Experiment Name"] === exp) {
+                                                a = i;
+                                                break;
+                                            }
+                                        }
+                                        return (
+                                            <div className='column is-one-quarter-desktop' key={Math.random()}>
+                                                <Bulma_component onclickinglink={() => { OpenLink(a["Experiment URL"]) }} onValueChange={() => { ToggleSave(a["Experiment Name"]) }} UserData={{
+                                                    exp_name: a["Experiment Name"],
+                                                    institute: a["Insitute Name"],
+                                                    exp_link: a["Experiment URL"],
+                                                    exp_img: a["Image"],
+                                                    institute_img: "https://cdn.vlabs.ac.in/logo/" + a["Insitute Name"].toLowerCase() + ".png",
+                                                    card_content: a["Description"],
+                                                    rating: '4.5',
+                                                    domain: a["Discipline Name"],
+                                                    lab: a["Lab Name"],
+                                                    saved: saved.includes(exp["Experiment Name"])
+                                                }} />
+                                            </div>
+                                        )
+                                    })
+                                }
+                            </div>) : null}
                     {
                         props.nav == 2 ? (<div className='columns is-multiline is-mobile'>
                             {
-                                props.settp(Math.ceil(saved.length / 8))
+                                props.settp(Math.ceil(saved.filter((ele) => {
+                                    for (let i of Display) {
+                                        if (i["Experiment Name"] === ele) {
+                                            return true;
+                                        }
+                                    }
+                                    return false;
+                                }).length / 8))
 
                             }
                             {
                                 console.log(typeof (saved))
                             }
                             {
-                                saved.map((exp) => {
+                                saved.filter((ele) => {
+                                    for (let i of Display) {
+                                        if (i["Experiment Name"] === ele) {
+                                            return true;
+                                        }
+                                    }
+                                    return false;
+                                }).slice((props.pagenum - 1) * 8, (props.pagenum) * 8).map((exp) => {
                                     let a = {}
                                     for (let i of props.experiments) {
                                         if (i["Experiment Name"] === exp) {
@@ -537,10 +664,13 @@ export default function ExperimentLoader(props) {
                     {
                         props.nav == 3 ? (<div className='columns is-multiline is-mobile'>
                             {
-                                props.settp(Math.ceil(Math.min(10, props.experiments.length) / 8))
+                                props.settp(Math.ceil(Math.min(10, Display.length) / 8))
                             }
                             {
-                                props.pop.slice((props.pagenum - 1) * 8, (props.pagenum) * 8).map((exp) => {
+                                props.pop.filter((ele) => {
+                                    if (Display.includes(ele)) return true;
+                                    else return false;
+                                }).slice(0, 10).slice((props.pagenum - 1) * 8, (props.pagenum) * 8).map((exp) => {
                                     return (
                                         <div className='column is-one-quarter-desktop' key={Math.random()}>
                                             <Bulma_component onclickinglink={() => { OpenLink(exp["Experiment URL"]) }} onValueChange={() => { ToggleSave(exp["Experiment Name"]) }} UserData={{
