@@ -9,7 +9,7 @@ import { HiFilter } from 'react-icons/hi'
 import Navbar from './components/Navbar';
 function App() {
   const [experiments, setExperiments] = React.useState([]);
-  const [nav, setNav] = useState(0)
+  const [nav, setNav] = useState(3)
   const [word, setWord] = useState("")
   const [page, setPage] = useState(1)
   const [totalPage, setTotal] = useState(1)
@@ -38,31 +38,33 @@ function App() {
     console.log(document.getElementById("filter-set").className)
     if (!document.getElementById("filter-set").className.includes("is-hidden-desktop is-hidden-tablet")) {
       document.getElementById("filter-set").className = document.getElementById("filter-set").className + " is-hidden-desktop is-hidden-tablet";
+      document.getElementById("divider").className = document.getElementById("divider").className + " is-hidden-desktop is-hidden-tablet";
     }
     else {
-      document.getElementById("filter-set").className = 'column is-4-tablet is-2-desktop is-hidden-mobile';
+      document.getElementById("filter-set").className = 'column is-2 is-hidden-mobile mr-4';
+      document.getElementById("divider").className = 'is-divider-vertical is-black is-hidden-mobile';
     }
     document.getElementById("filter-model").className = document.getElementById("filter-model").className + " is-active"
   }
   return (
     <>
       <Navbar setp={setPage} settp={setTotal} nav={nav} setNav={setNav} />
-      <div className='columns is-vcentered is-mobile '>
-        <div className='column is-three-fifths-desktop is-offset-one-fifth-desktop'>
-          <div className="field has-addons m-4">
-            <div className="control mr-6 is-hidden-mobile is-hidden-tablet-only">
-              <img className="image " src={logo} style={{ height: "120px", width: "600px" }} />
-            </div>
-            <div className='control' style={{marginTop:"auto",marginBottom:"auto"}}>
+      <div className='columns is-vcentered is-mobile m-0'>
+        <div className=" column mb-0 is-hidden-mobile is-hidden-tablet-only is-2-desktop ml-4 mt-2" >
+          <img className="image" style={{padding:"0px"}} width="200" height="200" src={"https://cdn.vlabs.ac.in/logo/vlead-large.png"}/>
+        </div>
+        <div className='column is-three-fifths-desktop ' style={{margin:"auto"}}>
+          <div className="field has-addons">
+            <div className='control' style={{ marginTop: "auto", marginBottom: "auto" }}>
               <p className="control has-icons-left">
-                <input className="input is-large" size="200" placeholder="Search" style={{ borderRadius: "290000px", borderWidth: "3px",borderColor:"black"}} onChange={SearchExp} />
+                <input className="input is-large" size="42" placeholder="Search" style={{ borderRadius: "290000px", borderWidth: "3px", borderColor: "black" }} onChange={SearchExp} />
                 <span className="icon is-small is-left">
                   <FcSearch />
                 </span>
               </p>
             </div>
-            <div className="control" style={{marginTop:"auto",marginBottom:"auto"}}>
-              <button className="button is-info ml-4 has-text-black is-large" style={{ borderRadius: "290000px", backgroundColor: "cyan", borderWidth: "3px",borderColor:"black" }} onClick={ToggleFilter}>
+            <div className="control" style={{ marginTop: "auto", marginBottom: "auto" }}>
+              <button className="button is-info ml-6 has-text-black is-large" style={{ borderRadius: "290000px", backgroundColor: "cyan", borderWidth: "3px", borderColor: "black" }} onClick={ToggleFilter}>
                 <HiFilter /> Filter
               </button>
             </div>

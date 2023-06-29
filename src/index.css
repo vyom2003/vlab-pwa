@@ -12,9 +12,6 @@ body {
   background-image: linear-gradient(#F5F5DC, lightcyan) !important;
 }
 
-#filter-set {
-  background-image: linear-gradient(brown, white) !important;
-}
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',

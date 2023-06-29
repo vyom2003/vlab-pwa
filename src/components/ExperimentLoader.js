@@ -20,6 +20,9 @@ export default function ExperimentLoader(props) {
     const [saved, setSaved] = useState([])
     const [saved_filters, setSavedFilters] = useState(JSON.parse(localStorage.getItem("Saved_Filters")))
     const [apply, setApply] = useState(1);
+    const [rename1, setRename1] = useState(0);
+    const [rename2, setRename2] = useState(0);
+    const [rename3, setRename3] = useState(0);
     const disc = {
         "Civil Engineering": "CIVIL",
         "Computer Science and Engineering": "CSE",
@@ -186,13 +189,17 @@ export default function ExperimentLoader(props) {
         setApply(1);
     }
     const RenameFilter = (name) => {
-        let val = window.prompt("Give new name")
-        if (val) {
+        if (name == "Filter1") setRename1(1 - rename1);
+        else if (name == "Filter2") setRename2(1 - rename2);
+        else if (name == "Filter3") setRename3(1 - rename3);
+    }
+    const ChangeName = (name, val) => {
+        if (val && val != "") {
             let a = JSON.parse(JSON.stringify(saved_filters))
             a[name]["AltName"] = val;
             setSavedFilters(a)
             localStorage.setItem("Saved_Filters", JSON.stringify(a));
-            window.alert("Filter renamed")
+            RenameFilter(name)
         }
     }
     const DeleteFilter = (name) => {
@@ -265,142 +272,6 @@ export default function ExperimentLoader(props) {
     return (
         <div>
             <div className="columns m-0 is-mobile">
-
-                <div id="filter-set" className='column is-2 is-hidden-mobile is-hidden-desktop is-hidden-tablet'>
-                    <div className="tabs is-centered is-boxed is-small">
-                        <ul>
-                            {apply ? <>
-                                <li className="is-active">
-                                    <a>
-                                        <b>Apply Filters</b>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a onClick={() => {
-                                        setApply(0);
-                                    }}>
-                                        <b style={{ color: "yellow" }}>Saved </b>
-                                    </a>
-
-                                </li></> : null}
-                            {!apply ? <>
-                                <li>
-                                    <a onClick={() => {
-                                        setApply(1);
-                                    }}>
-                                        <b style={{ color: "yellow" }}>Apply Filters</b>
-                                    </a>
-                                </li >
-                                <li className="is-active">
-                                    <a>
-                                        <b>Saved </b>
-                                    </a>
-
-                                </li></> : null}
-                        </ul>
-                    </div>
-                    {apply ? <>
-                        <div className="field mb-4 ml-4">
-                            <label className="label m-2 is-size-4 has-text-white">Institutes</label>
-                            {
-                                Instis.map((element) => {
-                                    if (SelectInstis.includes(element))
-                                        return (
-                                            <>
-                                                <button className="button is-rounded is-success has-text-light is-small is-focused m-2"
-                                                    onClick={() => { ExcludeInsti(element) }} style={{ height: "max-content", whiteSpace: "inherit" }}>{element}</button>
-                                                <br />
-                                            </>
-                                        )
-                                    else
-                                        return (
-                                            <>
-                                                <button className="button is-rounded is-danger is-light is-focused is-small m-2 has-text-black"
-                                                    onClick={() => { IncludeInsti(element) }}
-                                                    style={{
-                                                        boxShadow: "0 8px 8px 8px rgba(0,0,0,0.4)",
-                                                        height: "max-content", whiteSpace: "inherit"
-                                                    }}>{element}</button>
-                                                <br />
-                                            </>
-                                        )
-                                })
-                            }
-                        </div>
-                        <div className="is-divider"></div>
-                        <div className="field mb-4 ml-4">
-                            <label className="label m-2 is-size-4 has-text-white">Discipline</label>
-                            {
-                                Discipline.map((element) => {
-                                    if (SelectDisciplines.includes(element))
-                                        return (
-                                            <>
-                                                <button className="button is-rounded is-success has-text-light is-small is-focused m-2"
-                                                    onClick={() => { ExcludeDis(element) }} style={{ height: "max-content", whiteSpace: "inherit" }}>{disc[element]}</button>
-                                                <br />
-                                            </>
-                                        )
-                                    else
-                                        return (
-                                            <>
-                                                <button className="button is-rounded is-danger is-light is-focused is-small m-2 has-text-black"
-                                                    onClick={() => { IncludeDis(element) }}
-                                                    style={{
-                                                        boxShadow: "0 8px 8px 8px rgba(0,0,0,0.4)",
-                                                        height: "max-content", whiteSpace: "inherit"
-                                                    }}>{disc[element]}</button>
-                                                <br />
-                                            </>
-                                        )
-                                })
-                            }
-                        </div>
-                        <div className="is-divider"></div>
-                        <div className='has-text-centered'>
-                            <button className='button is-danger is-light is-rounded mr-4' style={{ padding: "10px" }} onClick={ClearFilter}><AiFillDelete />Clear</button>
-                            <button className='button is-info is-light is-rounded' style={{ padding: "10px" }} onClick={SaveFilter}><BsFillBookmarkPlusFill />Save</button>
-                        </div>
-                    </> : null}
-                    {
-                        apply == 0 ? <>
-                            <ul className='m-4' style={{ color: "black" }}>
-                                {saved_filters && saved_filters["Filter1"] ?
-                                    <li className='mt-3'>
-                                        <span style={{ backgroundColor: "lightgreen", padding: "3px" }}>{saved_filters["Filter1"]["AltName"]}{" "}:</span>
-                                        <br />
-                                        <button className='mt-2 ml-1 button is-small is-primary has-text-black is-light'
-                                            onClick={() => { ApplyFilter("Filter1") }}><TiTick />Apply</button>
-                                        <button className='mt-2 ml-1 button is-small is-primary has-text-black is-light'
-                                            onClick={() => { RenameFilter("Filter1") }}><BiRename />Rename</button>
-                                        <button className='mt-2 ml-1 button is-small is-primary has-text-black is-light'
-                                            onClick={() => { DeleteFilter("Filter1") }}><AiFillDelete />Delete</button>
-                                    </li> : null}
-                                {saved_filters && saved_filters["Filter2"] ?
-                                    <li className='mt-5'>
-                                        <span style={{ backgroundColor: "lightgreen", padding: "3px" }}>{saved_filters["Filter2"]["AltName"]}{" "}:</span>
-                                        <br />
-                                        <button className='mt-2 ml-1 button is-small is-primary has-text-black is-light'
-                                            onClick={() => { ApplyFilter("Filter2") }}><TiTick />Apply</button>
-                                        <button className='mt-2 ml-1 button is-small is-primary has-text-black is-light'
-                                            onClick={() => { RenameFilter("Filter2") }}><BiRename />Rename</button>
-                                        <button className='mt-2 ml-1 button is-small is-primary has-text-black is-light'
-                                            onClick={() => { DeleteFilter("Filter2") }}><AiFillDelete />Delete</button>
-                                    </li> : null}
-                                {saved_filters && saved_filters["Filter3"] ?
-                                    <li className='mt-5'>
-                                        <span style={{ backgroundColor: "lightgreen", padding: "3px" }}>{saved_filters["Filter3"]["AltName"]}{" "}:</span>
-                                        <br />
-                                        <button className='mt-2 ml-1 button is-small is-primary has-text-black is-light'
-                                            onClick={() => { ApplyFilter("Filter3") }}><TiTick />Apply</button>
-                                        <button className='mt-2 ml-1 button is-small is-primary has-text-black is-light'
-                                            onClick={() => { RenameFilter("Filter3") }}><BiRename />Rename</button>
-                                        <button className='mt-2 ml-1 button is-small is-primary has-text-black is-light'
-                                            onClick={() => { DeleteFilter("Filter3") }}><AiFillDelete />Delete</button>
-                                    </li> : null}
-                            </ul>
-                        </> : null
-                    }
-                </div>
                 <div id="filter-model" className="modal is-hidden-tablet is-hidden-desktop">
                     <div className="modal-background"></div>
                     <div className="modal-card " style={{ width: "90%", marginLeft: "5%", marginRight: "5%" }}>
@@ -416,7 +287,7 @@ export default function ExperimentLoader(props) {
                                         if (SelectInstis.includes(element))
                                             return (
                                                 <>
-                                                    <button className="button is-rounded is-success has-text-light is-small is-focused m-2"
+                                                    <button className="button is-rounded is-success is-light has-text-black is-small is-focused m-2"
                                                         onClick={() => { ExcludeInsti(element) }} style={{ height: "max-content", whiteSpace: "inherit" }}>{element}</button>
                                                     <br />
                                                 </>
@@ -436,7 +307,7 @@ export default function ExperimentLoader(props) {
                                     })
                                 }
                             </div>
-                                <div className="is-divider"></div>
+                                <div className="is-divider is-black"></div>
                                 <div className="field mb-4 ml-4">
                                     <label className="label m-2 is-size-4 has-text-primary" style={{ textShadow: "0.15rem 0.15rem #D5F2D8" }}>Discipline</label>
                                     {
@@ -444,7 +315,7 @@ export default function ExperimentLoader(props) {
                                             if (SelectDisciplines.includes(element))
                                                 return (
                                                     <>
-                                                        <button className="button is-rounded is-success has-text-light is-small is-focused m-2"
+                                                        <button className="button is-rounded is-success is-light has-text-black is-small is-focused m-2"
                                                             onClick={() => { ExcludeDis(element) }} style={{ height: "max-content", whiteSpace: "inherit" }}>{disc[element]}</button>
                                                         <br />
                                                     </>
@@ -469,36 +340,60 @@ export default function ExperimentLoader(props) {
                                     <ul className='m-4' style={{ color: "black" }}>
                                         {saved_filters && saved_filters["Filter1"] ?
                                             <li className='mt-3'>
-                                                <span style={{ backgroundColor: "lightgreen", padding: "3px" }}>{saved_filters["Filter1"]["AltName"]}{" "}:</span>
+                                                <span style={{ backgroundColor: "lightgreen", borderRadius: "29000px", padding: "7px" }}><b>{saved_filters["Filter1"]["AltName"]}</b></span>
                                                 <br />
-                                                <button className='mt-2 ml-1 button is-small is-primary has-text-black is-light'
-                                                    onClick={() => { ApplyFilter("Filter1") }}><TiTick />Apply</button>
-                                                <button className='mt-2 ml-1 button is-small is-primary has-text-black is-light'
-                                                    onClick={() => { RenameFilter("Filter1") }}><BiRename />Rename</button>
-                                                <button className='mt-2 ml-1 button is-small is-primary has-text-black is-light'
-                                                    onClick={() => { DeleteFilter("Filter1") }}><AiFillDelete />Delete</button>
+                                                <button className='button mt-2 ml-1 is-small is-success is-light is-rounded has-text-black'
+                                                    onClick={() => { ApplyFilter("Filter1") }}>Apply</button>
+                                                <button className='mt-2 ml-1 button is-small is-success is-light is-rounded has-text-black'
+                                                    onClick={() => { RenameFilter("Filter1") }}>Rename</button>
+                                                <button className='mt-2 ml-1 button is-small is-success is-light is-rounded has-text-black'
+                                                    onClick={() => { DeleteFilter("Filter1") }}>Delete</button>
+                                                {
+                                                    rename1 ? <>
+                                                        <input id="Filter1-val" className="input is-small ml-1 is-rounded mt-3" size="1" placeholder='Enter the new name' style={{ border: "2px solid black" }}></input>
+                                                        <button className='button mt-2 ml-1 is-small is-success is-rounded is-light has-text-black' onClick={() => {
+                                                            ChangeName("Filter1", document.getElementById("Filter1-val").value)
+                                                        }}>Save</button>
+                                                    </> : null
+                                                }
                                             </li> : null}
                                         {saved_filters && saved_filters["Filter2"] ?
                                             <li className='mt-5'>
-                                                <span style={{ backgroundColor: "lightgreen", padding: "3px" }}>{saved_filters["Filter2"]["AltName"]}{" "}:</span>
+                                                <span style={{ backgroundColor: "lightgreen", borderRadius: "29000px", padding: "7px" }}><b>{saved_filters["Filter2"]["AltName"]}</b></span>
                                                 <br />
-                                                <button className='mt-2 ml-1 button is-small is-primary has-text-black is-light'
-                                                    onClick={() => { ApplyFilter("Filter2") }}><TiTick />Apply</button>
-                                                <button className='mt-2 ml-1 button is-small is-primary has-text-black is-light'
-                                                    onClick={() => { RenameFilter("FIlter2") }}><BiRename />Rename</button>
-                                                <button className='mt-2 ml-1 button is-small is-primary has-text-black is-light'
-                                                    onClick={() => { DeleteFilter("Filter2") }}><AiFillDelete />Delete</button>
+                                                <button className='button mt-2 ml-1  is-small is-success is-light is-rounded has-text-black'
+                                                    onClick={() => { ApplyFilter("Filter2") }}>Apply</button>
+                                                <button className='mt-2 ml-1 button is-small is-success is-light is-rounded has-text-black'
+                                                    onClick={() => { RenameFilter("Filter2") }}>Rename</button>
+                                                <button className='mt-2 ml-1 button is-small is-success is-light is-rounded has-text-black'
+                                                    onClick={() => { DeleteFilter("Filter2") }}>Delete</button>
+                                                {
+                                                    rename2 ? <>
+                                                        <input id="Filter2-val" className="input is-small ml-1 is-rounded mt-3" size="1" placeholder='Enter the new name' style={{ border: "2px solid black" }}></input>
+                                                        <button className='button mt-2 ml-1 is-small is-success is-rounded is-light has-text-black' onClick={() => {
+                                                            ChangeName("Filter2", document.getElementById("Filter2-val").value)
+                                                        }}>Save</button>
+                                                    </> : null
+                                                }
                                             </li> : null}
                                         {saved_filters && saved_filters["Filter3"] ?
                                             <li className='mt-5'>
-                                                <span style={{ backgroundColor: "lightgreen", padding: "3px" }}>{saved_filters["Filter3"]["AltName"]}{" "}:</span>
+                                                <span style={{ backgroundColor: "lightgreen", borderRadius: "29000px", padding: "7px" }}><b>{saved_filters["Filter3"]["AltName"]}</b></span>
                                                 <br />
-                                                <button className='mt-2 ml-1 button is-small is-primary has-text-black is-light'
-                                                    onClick={() => { ApplyFilter("Filter3") }}><TiTick />Apply</button>
-                                                <button className='mt-2 ml-1 button is-small is-primary has-text-black is-light'
-                                                    onClick={() => { RenameFilter("Filter3") }}><BiRename />Rename</button>
-                                                <button className='mt-2 ml-1 button is-small is-primary has-text-black is-light'
-                                                    onClick={() => { DeleteFilter("Filter3") }}><AiFillDelete />Delete</button>
+                                                <button className='button mt-2 ml-1 is-small is-success is-light is-rounded has-text-black'
+                                                    onClick={() => { ApplyFilter("Filter3") }}>Apply</button>
+                                                <button className='mt-2 ml-1 button is-small is-success is-light is-rounded has-text-black'
+                                                    onClick={() => { RenameFilter("Filter3") }}>Rename</button>
+                                                <button className='mt-2 ml-1 button is-small is-success is-light is-rounded has-text-black'
+                                                    onClick={() => { DeleteFilter("Filter3") }}>Delete</button>
+                                                {
+                                                    rename3 ? <>
+                                                        <input id="Filter3-val" className="input is-small ml-1 is-rounded mt-3" size="1" placeholder='Enter the new name' style={{ border: "2px solid black" }}></input>
+                                                        <button className='button mt-2 ml-1 is-small is-success is-rounded is-light has-text-black' onClick={()=>{
+                                                            ChangeName("Filter3",document.getElementById("Filter3-val").value)
+                                                        }}>Save</button>
+                                                    </> : null
+                                                }
                                             </li> : null}
                                     </ul>
                                 </> : null
@@ -521,19 +416,19 @@ export default function ExperimentLoader(props) {
                     </div>
                 </div>
                 <div className='column'>
+                    <div className='has-text-centered'>
+                        <button id="popular-tab" className='button is-info ml-5 has-text-black is-medium is-hidden-mobile is-hidden-tablet-only'
+                            style={{ border: "2px solid black", borderTopLeftRadius: "20px", borderBottomLeftRadius: "20px" }} onClick={LoadPop}><AiFillStar />Popular</button>
 
-                    <button id="popular-tab" className='button is-primary ml-5 has-text-black is-medium is-hidden-mobile is-hidden-tablet-only'
-                        style={{ border: "2px solid black", borderTopLeftRadius: "20px", borderBottomLeftRadius: "20px" }} onClick={LoadPop}><AiFillStar />Popular</button>
+                        <button id="recent-tab" className='button is-primary has-text-black is-medium is-hidden-mobile is-hidden-tablet-only'
+                            style={{ border: "2px solid black" }} onClick={LoadRecents}><RxCounterClockwiseClock />Recents</button>
 
-                    <button id="recent-tab" className='button is-primary has-text-black is-medium is-hidden-mobile is-hidden-tablet-only'
-                        style={{ border: "2px solid black" }} onClick={LoadRecents}><RxCounterClockwiseClock />Recents</button>
+                        <button id="all-tab" className='button is-primary has-text-black is-medium is-hidden-mobile is-hidden-tablet-only'
+                            style={{ border: "2px solid black" }} onClick={LoadAll}><AiFillExperiment />All Experiments</button>
 
-                    <button id="all-tab" className='button is-info has-text-black is-medium is-hidden-mobile is-hidden-tablet-only'
-                        style={{ border: "2px solid black" }} onClick={LoadAll}><AiFillExperiment />All Experiments</button>
-
-                    <button id="save-tab" className='button is-primary has-text-black is-medium is-hidden-mobile is-hidden-tablet-only'
-                        style={{ border: "2px solid black", borderTopRightRadius: "20px", borderBottomRightRadius: "20px" }} onClick={LoadSaved}><BsFillBookmarkStarFill />Starred</button>
-
+                        <button id="save-tab" className='button is-primary has-text-black is-medium is-hidden-mobile is-hidden-tablet-only'
+                            style={{ border: "2px solid black", borderTopRightRadius: "20px", borderBottomRightRadius: "20px" }} onClick={LoadSaved}><BsFillBookmarkStarFill />Starred</button>
+                    </div>
                     <br className='is-hidden-mobile is-hidden-tablet-only' />
                     <br className='is-hidden-mobile is-hidden-tablet-only' />
                     {
@@ -690,6 +585,167 @@ export default function ExperimentLoader(props) {
                                 })
                             }
                         </div>) : null}
+                </div>
+                <div id="divider" className="is-divider-vertical is-black is-hidden-mobile is-hidden-desktop is-hidden-tablet"></div>
+                <div id="filter-set" className='column is-2 is-hidden-mobile is-hidden-desktop is-hidden-tablet'>
+                    <div className="has-text-centered mb-5 mr-4">
+
+                        {apply ? <>
+                            <span className="is-active">
+                                <a className='button is-info has-text-black' style={{ border: "2px solid black", borderTopLeftRadius: "20px", borderBottomLeftRadius: "20px" }}>
+                                    Apply
+                                </a>
+                            </span>
+                            <span>
+                                <a className='button is-primary has-text-black' style={{ border: "2px solid black", borderTopRightRadius: "20px", borderBottomRightRadius: "20px" }} onClick={() => {
+                                    setApply(0);
+                                }}>
+                                    Saved
+                                </a>
+
+                            </span></> : null}
+                        {!apply ? <>
+                            <span>
+                                <a className='button is-primary has-text-black' style={{ border: "2px solid black", borderTopLeftRadius: "20px", borderBottomLeftRadius: "20px" }} onClick={() => {
+                                    setApply(1);
+                                }}>
+                                    Apply
+                                </a>
+                            </span >
+                            <span className="is-active">
+                                <a className='button is-info has-text-black' style={{ border: "2px solid black", borderTopRightRadius: "20px", borderBottomRightRadius: "20px" }}>
+                                    Saved
+                                </a>
+
+                            </span></> : null}
+
+                    </div>
+                    {apply ? <>
+                        <div className="field mb-4 ml-4">
+                            <label className="label m-2 is-size-4 has-text-black">Institutes</label>
+                            {
+                                Instis.map((element) => {
+                                    if (SelectInstis.includes(element))
+                                        return (
+                                            <>
+                                                <button className="button is-rounded is-success is-light has-text-black is-small is-focused m-2"
+                                                    onClick={() => { ExcludeInsti(element) }} style={{ height: "max-content", whiteSpace: "inherit" }}>{element}</button>
+                                                <br />
+                                            </>
+                                        )
+                                    else
+                                        return (
+                                            <>
+                                                <button className="button is-rounded is-danger is-light is-focused is-small m-2 has-text-black"
+                                                    onClick={() => { IncludeInsti(element) }}
+                                                    style={{
+                                                        boxShadow: "0 8px 8px 8px rgba(0,0,0,0.4)",
+                                                        height: "max-content", whiteSpace: "inherit"
+                                                    }}>{element}</button>
+                                                <br />
+                                            </>
+                                        )
+                                })
+                            }
+                        </div>
+                        <div className="is-divider is-black"></div>
+                        <div className="field mb-4 ml-4">
+                            <label className="label m-2 is-size-4 has-text-black">Discipline</label>
+                            {
+                                Discipline.map((element) => {
+                                    if (SelectDisciplines.includes(element))
+                                        return (
+                                            <>
+                                                <button className="button is-rounded is-success is-light has-text-black is-small is-focused m-2"
+                                                    onClick={() => { ExcludeDis(element) }} style={{ height: "max-content", whiteSpace: "inherit" }}>{disc[element]}</button>
+                                                <br />
+                                            </>
+                                        )
+                                    else
+                                        return (
+                                            <>
+                                                <button className="button is-rounded is-danger is-light is-focused is-small m-2 has-text-black"
+                                                    onClick={() => { IncludeDis(element) }}
+                                                    style={{
+                                                        boxShadow: "0 8px 8px 8px rgba(0,0,0,0.4)",
+                                                        height: "max-content", whiteSpace: "inherit"
+                                                    }}>{disc[element]}</button>
+                                                <br />
+                                            </>
+                                        )
+                                })
+                            }
+                        </div>
+                        <div className="is-divider is-black"></div>
+                        <div className='has-text-centered'>
+                            <button className='button is-danger is-light is-rounded mr-4' style={{ padding: "10px" }} onClick={ClearFilter}><AiFillDelete />Clear</button>
+                            <button className='button is-info is-light is-rounded' style={{ padding: "10px" }} onClick={SaveFilter}><BsFillBookmarkPlusFill />Save</button>
+                        </div>
+                    </> : null}
+                    {
+                        apply == 0 ? <>
+                            <ul className='m-4' style={{ color: "black" }}>
+                                {saved_filters && saved_filters["Filter1"] ?
+                                    <li className='mt-3'>
+                                        <span style={{ backgroundColor: "lightgreen", borderRadius: "29000px", padding: "7px" }}><b>{saved_filters["Filter1"]["AltName"]}</b></span>
+                                        <br />
+                                        <button className='button mt-2 ml-1 is-small is-success is-rounded is-light has-text-black'
+                                            onClick={() => { ApplyFilter("Filter1") }}>Apply</button>
+                                        <button className='mt-2 ml-1 button is-small is-success is-rounded is-light has-text-black'
+                                            onClick={() => { RenameFilter("Filter1") }}>Rename</button>
+                                        <button className='mt-2 ml-1 button is-small is-success is-rounded is-light has-text-black'
+                                            onClick={() => { DeleteFilter("Filter1") }}>Delete</button>
+                                        {
+                                            rename1 ? <>
+                                                <input id="Filter1-change" className="input is-small ml-1 is-rounded mt-3" size="1" placeholder='Enter the new name' style={{ border: "2px solid black" }}></input>
+                                                <button className='button mt-2 ml-1 is-small is-success is-rounded is-light has-text-black' onClick={()=>{
+                                                            ChangeName("Filter1",document.getElementById("Filter1-change").value)
+                                                        }}>Save</button>
+                                            </> : null
+                                        }
+                                    </li> : null}
+                                {saved_filters && saved_filters["Filter2"] ?
+                                    <li className='mt-5'>
+                                        <span style={{ backgroundColor: "lightgreen", borderRadius: "29000px", padding: "7px" }}><b>{saved_filters["Filter2"]["AltName"]}</b></span>
+                                        <br />
+                                        <button className='button mt-2 ml-1 is-small is-success is-rounded is-light has-text-black'
+                                            onClick={() => { ApplyFilter("Filter2") }}>Apply</button>
+                                        <button className='mt-2 ml-1 button is-small is-success is-rounded is-light has-text-black'
+                                            onClick={() => { RenameFilter("Filter2") }}>Rename</button>
+                                        <button className='mt-2 ml-1 button is-small is-success is-rounded is-light has-text-black'
+                                            onClick={() => { DeleteFilter("Filter2") }}>Delete</button>
+                                        {
+                                            rename2 ? <>
+                                                <input id="Filter2-change" className="input is-small ml-1 is-rounded mt-3" size="1" placeholder='Enter the new name' style={{ border: "2px solid black" }}></input>
+                                                <button className='button mt-2 ml-1 is-small is-success is-rounded is-light has-text-black' onClick={()=>{
+                                                            ChangeName("Filter2",document.getElementById("Filter2-change").value)
+                                                        }}>Save</button>
+                                            </> : null
+                                        }
+                                    </li> : null}
+                                {saved_filters && saved_filters["Filter3"] ?
+                                    <li className='mt-5'>
+                                        <span style={{ backgroundColor: "lightgreen", borderRadius: "29000px", padding: "7px" }}><b>{saved_filters["Filter3"]["AltName"]}</b></span>
+                                        <br />
+                                        <button className='button mt-2 ml-1 is-small is-success is-rounded is-light has-text-black'
+                                            onClick={() => { ApplyFilter("Filter3") }}>Apply</button>
+                                        <button className='mt-2 ml-1 button is-small is-success is-rounded is-light has-text-black'
+                                            onClick={() => { RenameFilter("Filter3") }}>Rename</button>
+                                        <button className='mt-2 ml-1 button is-small is-success is-rounded is-light has-text-black'
+                                            onClick={() => { DeleteFilter("Filter3") }}>Delete</button>
+                                        {
+                                            rename3 ? <>
+                                                <input id="Filter3-change" className="input is-small ml-1 is-rounded mt-3" size="1" placeholder='Enter the new name' style={{ border: "2px solid black" }}></input>
+                                                <button className='button mt-2 ml-1 is-small is-success is-rounded is-light has-text-black'
+                                                onClick={()=>{
+                                                    ChangeName("Filter3",document.getElementById("Filter3-val").value)
+                                                }} >Save</button>
+                                            </> : null
+                                        }
+                                    </li> : null}
+                            </ul>
+                        </> : null
+                    }
                 </div>
             </div>
         </div>
